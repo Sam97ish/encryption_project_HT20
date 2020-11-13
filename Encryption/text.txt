@@ -1,0 +1,8 @@
+ As there are to many characters to test them all. You need to think about how many cases you need to safe-guard.
+
+I think only two cases are needed to document the behavior
+
+    one with special characters
+    one without special characters
+
+I would try a couple different characters and combinations when doing exploratory testing sessions, but not create test-scripts for a lot of cases. It possible to add more cases in the future if they are found to be giving problems
