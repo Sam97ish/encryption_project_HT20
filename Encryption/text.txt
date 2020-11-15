@@ -1,8 +1,1 @@
-A lookup table is simply a mapping of the original characters and the characters they should translate to in an encrypted form.
-So far, we have been iterating over each of the letters in the string and computing their shifted positions.
-This is inefficient because our character set is limited, and most of them occur more than once in the string.
-So computing their encrypted equivalence each time they occur is not efficient, and it becomes costly if we are encrypting a very long text with hundreds of thousands of characters in it.
-
-We can avoid this by computing the shifted positions of each of the characters in our character set only once before starting the encryption process.
-So if there are 26 uppercase and 26 lowercase letters, we’d need only 52 computations once and some space in memory to store this mapping.
-Then during the encryption and decryption process, all we’d have to do is perform a ‘lookup’ in this table – an operation that is faster than performing a modulo operation each time.
+hello everyone my name is sam and i'm very lazy which led to me missing a lot of classes. i'm going to try to catch up with everything today. wish me luck boo.     

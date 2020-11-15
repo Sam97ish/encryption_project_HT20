@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import string,sys
+from collections import deque
+import math
 
 #start of class
 class EncryptionSub:
@@ -44,25 +46,83 @@ class EncryptionSub:
 
 #start of class
 class EncryptionTran:
-    
-    key = 0
-
-    def __init__(self, key):
-        self.key = key
            
         
-    def encrypt(self, msg):
-        msg =  " msg should be encrypted by Trans here"
-        return msg
+    def encrypt(self, msg, key):
+        if key < 10:
+            return;
+        
+        lsmsg = list(msg.replace("\n", ""))
+        lskey= list(str(key))
+        lenKey = int(math.log10(key))+1
+        
+        while len(lsmsg) % lenKey != 0:
+            lsmsg.append(" ")
+        
+        dq = deque(lsmsg)
+
+
+        encryptedMsg = []
+        first = 0
+
+        for i in range(len(dq)):
+            
+            if i%lenKey == 0:
+                if first > 0:
+                    for k in range(lenKey):
+                        dq.popleft()
+                    
+                first +=1
+                
+            digit = lskey[i%lenKey]
+            char = dq[(int(digit) - 1)]
+            encryptedMsg.append(char)
+            
+        
+        return encryptedMsg
     
-    def decrypt(self, encryptmsg):
-        encryptmsg = " msg should be decrypted by Trans here"
-        return encryptmsg
+    def decrypt(self, encryptmsg, key):
+        if key < 10:
+            return;
+        
+        lsmsg = list(encryptmsg)
+        lskey= list(str(key))
+        lenKey = int(math.log10(key))+1
+        
+        while len(lsmsg) % lenKey != 0:
+            lsmsg.append(" ")
+        
+        dq = deque(lsmsg)
+
+        plainttext = ["" for i in range(len(dq))]
+        first = 0
+        offset = 0
+        i=0
+        
+        while dq:
+            
+            if i%lenKey == 0:
+                if first > 0:
+                    if i%lenKey == 0:
+                        offset +=lenKey
+                        i=0
+                    for k in range(lenKey):
+                        dq.popleft()
+                    
+                first +=1
+            if dq:
+                   
+                digit = lskey[i%lenKey]
+                char = dq[i]
+                plainttext[int(digit)-1+offset] = char
+                i+=1 
+        
+        return plainttext
     
 # end of the class
 
 
-#begin of main
+#start of main
 if(__name__ == "__main__"):
     #to handle commands if executed from CLI.
     
@@ -93,7 +153,7 @@ if(__name__ == "__main__"):
             exit(1)
     else:
         
-        print("Hello user, please give me the file path")
+        print("Hello kind soul,\nJust letting you know that you can execute me directly from the terminal using the command: \nEncryption.py -[S/T] -[E/D] -key -filepath -shift[R/L] (shift is optional and only for subsitution)\nBut since we're here, please give me the file path")
         filepath = input("file path : ")
         
         print("What type of algorithm do you wish to use ?")
@@ -102,7 +162,7 @@ if(__name__ == "__main__"):
         print("What do you want to encypt this file or decrypt it ?")
         mode = input("E or D : ")
         
-        print("Provide me with a key, kind soul.")
+        print("Provide me with a key, kind soul. \nThe key for subsitution must be between 1-256. \nThe key for Transposition must be something like 4132 where each number corresponds to a position.")
         key = int(input("key : "))
     
     try:
@@ -120,30 +180,36 @@ if(__name__ == "__main__"):
     
     #print("the msg is " + msg)
     
-    if(SubTan == "S"):
+    if(SubTan.lower() == "s"):
         msgHandler = EncryptionSub()
         if len(sys.argv) < 5:
             print("Do you want to shift to the left or to the right ? ")
             shift = bool(input("R or L, default is right : ") =="L")
-        if(mode == "E"):
+        if(mode.lower() == "e"):
             msg = msgHandler.encrypt(msg, key, shift)
             
-        elif (mode == "D"):
+        elif (mode.lower() == "d"):
             msg = msgHandler.decrypt(msg, key, shift)
+        else:
+            print("Error: unknown mode (E/D).")
             
-    elif(SubTan == "T"):
+    elif(SubTan.lower() == "t"):
         msgHandler = EncryptionTran()
         
-        if(mode == "E"):
-            msg = msgHandler.encrypt(msg)
+        if(mode.lower() == "e"):
+            msg = msgHandler.encrypt(msg,key)
             
-        elif (mode == "D"):
-            msg = msgHandler.decrypt(msg)
-    
-
+        elif (mode.lower() == "d"):
+            msg = msgHandler.decrypt(msg,key)
+        else:
+            print("Error: unknown mode (E/D).")
+    else:
+        print("Error: unknown Encryption Algorithm.")
+        
     file_object.seek(0)
     file_object.writelines(msg)
     file_object.truncate()
     file_object.close()
+    print("DONE !")
     
     
